@@ -1,0 +1,6 @@
+herramientas/
+.claude/
+.impeccable/
+node_modules/
+*.png
+*.svg

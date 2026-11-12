@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow"><!-- álbum privado: que no aparezca en Google -->
+<title>Nuestra Boda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   ÁLBUM DIGITAL DE BODA — plantilla por Fabio Reyes
+   Para editar: baja hasta "CONFIGURACIÓN" en el <script>.
+   ========================================================= */
+:root{
+  --papel:#f7f3ee;
+  --papel-2:#efe8df;
+  --tinta:#2b2622;
+  --tinta-suave:#6f665e;
+  --oro:#a8875a;
+  --linea:rgba(43,38,34,.14);
+  --serif:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans:'Jost', 'Helvetica Neue', Arial, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--papel);color:var(--tinta);font-family:var(--sans);font-weight:300;line-height:1.7;overflow-x:hidden}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ---------- Barra de progreso ---------- */
+#progreso{position:fixed;top:0;left:0;height:2px;width:0;background:var(--oro);z-index:50;transition:width .1s linear}
+
+/* ---------- Portada ---------- */
+.portada{position:relative;height:100svh;min-height:520px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;color:#fff;text-align:center}
+.portada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08);animation:acercar 14s ease-out forwards}
+.portada::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.05) 40%,rgba(0,0,0,.6) 100%)}
+@keyframes acercar{to{transform:scale(1)}}
+.portada-texto{position:relative;z-index:2;padding:0 24px 12vh;opacity:0;animation:aparecer 1.6s .4s ease forwards}
+.portada .pre{font-size:.75rem;letter-spacing:.35em;text-transform:uppercase;margin-bottom:18px}
+.portada h1{font-family:var(--serif);font-weight:300;font-size:clamp(3rem,11vw,7rem);line-height:1}
+.portada h1 em{font-style:italic;color:#e9d9bf;font-size:.6em;display:block;margin:6px 0}
+.portada .fecha{margin-top:22px;font-size:.85rem;letter-spacing:.2em;text-transform:uppercase}
+.bajar{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;width:1px;height:46px;background:rgba(255,255,255,.5);overflow:hidden}
+.bajar::after{content:"";position:absolute;top:-46px;left:0;width:1px;height:46px;background:#fff;animation:gota 2s infinite}
+@keyframes gota{to{top:46px}}
+@keyframes aparecer{to{opacity:1}}
+
+/* ---------- Introducción ---------- */
+.intro{max-width:640px;margin:0 auto;padding:120px 24px 80px;text-align:center}
+.intro .ornamento{font-family:var(--serif);color:var(--oro);font-size:1.6rem;margin-bottom:24px}
+.intro p{font-family:var(--serif);font-size:clamp(1.3rem,3.4vw,1.75rem);font-style:italic;font-weight:300;line-height:1.5}
+.intro .lugar{margin-top:28px;font-family:var(--sans);font-style:normal;font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--tinta-suave)}
+
+/* ---------- Índice de capítulos ---------- */
+.indice{max-width:900px;margin:0 auto 40px;padding:0 24px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px}
+.indice a{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tinta-suave);text-decoration:none;padding:4px 0;border-bottom:1px solid transparent;transition:.3s}
+.indice a:hover{color:var(--tinta);border-color:var(--oro)}
+
+/* ---------- Capítulos ---------- */
+.capitulo{max-width:1180px;margin:0 auto;padding:90px 20px 40px;position:relative}
+.cap-cabecera{display:grid;grid-template-columns:1fr;gap:10px;text-align:center;max-width:620px;margin:0 auto 50px}
+.cap-num{font-family:var(--serif);font-style:italic;color:var(--oro);font-size:1.1rem}
+.cap-cabecera h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.05}
+.cap-hora{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--tinta-suave)}
+.cap-texto{font-family:var(--serif);font-size:1.25rem;color:var(--tinta-suave);margin-top:10px}
+.linea-tiempo{width:1px;height:70px;background:var(--linea);margin:0 auto}
+
+/* Galería en filas justificadas: se lee de izquierda a derecha, en orden cronológico.
+   Cada foto crece según su proporción (--r), así todas las de una fila miden lo mismo de alto. */
+.galeria{--alto:320px;display:flex;flex-wrap:wrap;gap:14px}
+.galeria:not(.cuadricula)::after{content:"";flex-grow:1e6} /* la última fila no se estira */
+.foto{flex:var(--r,.75) 1 calc(var(--r,.75) * var(--alto));aspect-ratio:var(--r,.75);overflow:hidden;cursor:zoom-in;position:relative;background:var(--papel-2)}
+.foto img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),opacity .6s}
+.foto:hover img{transform:scale(1.035)}
+.foto.destacada{flex:1 1 100%;aspect-ratio:var(--r,.75);max-height:85vh}
+
+/* Apartado de invitados */
+.fondo-invitados{background:var(--papel-2);margin-top:90px;padding-bottom:70px}
+.fondo-invitados .capitulo{padding-top:90px}
+.galeria.cuadricula{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.galeria.cuadricula .foto{margin:0;aspect-ratio:4/5}
+.galeria.cuadricula .foto img{width:100%;height:100%;object-fit:cover}
+
+/* Animación al hacer scroll */
+.revelar{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease}
+.revelar.visible{opacity:1;transform:none}
+
+/* ---------- Cierre ---------- */
+.cierre{text-align:center;padding:130px 24px 70px;max-width:680px;margin:0 auto}
+.cierre h2{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(2.2rem,7vw,4rem);line-height:1.1}
+.cierre p{font-family:var(--serif);font-size:1.25rem;color:var(--tinta-suave);margin:20px 0 40px}
+.boton{display:inline-block;border:1px solid var(--tinta);padding:14px 34px;font-size:.75rem;letter-spacing:.28em;text-transform:uppercase;transition:.35s}
+.boton:hover{background:var(--tinta);color:var(--papel)}
+.firma{margin-top:90px;padding-top:30px;border-top:1px solid var(--linea);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--tinta-suave)}
+.firma a{color:inherit}
+
+/* ---------- Música ---------- */
+#btnMusica{position:fixed;right:18px;bottom:18px;z-index:40;width:46px;height:46px;border-radius:50%;background:rgba(247,243,238,.92);border:1px solid var(--linea);display:none;align-items:center;justify-content:center;font-size:1.05rem;backdrop-filter:blur(6px)}
+#btnMusica.activo{display:flex}
+
+/* ---------- Visor (lightbox) ---------- */
+#visor{position:fixed;inset:0;z-index:100;background:rgba(18,16,14,.97);display:none;flex-direction:column;align-items:center;justify-content:center;color:#eee;touch-action:pan-y}
+#visor.abierto{display:flex}
+#visor img{max-width:94vw;max-height:80svh;object-fit:contain;user-select:none;transition:opacity .35s}
+.visor-info{margin-top:16px;text-align:center;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:#aaa}
+.visor-info b{display:block;font-family:var(--serif);font-weight:300;font-style:italic;font-size:1.1rem;letter-spacing:0;text-transform:none;color:#ddd;margin-bottom:2px}
+.visor-btn{position:absolute;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#ddd;opacity:.75;transition:.25s}
+.visor-btn:hover{opacity:1}
+#vCerrar{top:10px;right:10px}
+#vPrev{left:6px;top:50%;transform:translateY(-50%)}
+#vNext{right:6px;top:50%;transform:translateY(-50%)}
+.visor-acciones{position:absolute;top:18px;left:18px;display:flex;gap:18px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase}
+.visor-acciones a,.visor-acciones button{color:#bbb;text-decoration:none}
+.visor-acciones a:hover,.visor-acciones button:hover{color:#fff}
+#vBarra{position:absolute;bottom:0;left:0;height:2px;background:var(--oro);width:0}
+
+@media (max-width:640px){
+  .galeria{--alto:110px;gap:8px} /* permite 2 horizontales o 3 verticales por fila */
+  .galeria.cuadricula{grid-template-columns:repeat(2,1fr);gap:8px}
+  .capitulo{padding:70px 12px 30px}
+  .visor-btn#vPrev,.visor-btn#vNext{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .revelar{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progreso"></div>
+<main id="album"></main>
+
+<button id="btnMusica" aria-label="Música">♪</button>
+<audio id="audio" loop preload="none"></audio>
+
+<div id="visor" role="dialog" aria-modal="true">
+  <div class="visor-acciones">
+    <a id="vDescargar" download>Descargar</a>
+    <button id="vAuto">▶ Presentación</button>
+  </div>
+  <button class="visor-btn" id="vCerrar" aria-label="Cerrar">✕</button>
+  <button class="visor-btn" id="vPrev" aria-label="Anterior">‹</button>
+  <img id="vImg" alt="">
+  <button class="visor-btn" id="vNext" aria-label="Siguiente">›</button>
+  <div class="visor-info"><b id="vCap"></b><span id="vCont"></span></div>
+  <div id="vBarra"></div>
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURACIÓN — solo edita esta parte
+   ---------------------------------------------------------
+   1. Pon las 108 fotos originales en "fotos" y las optimizadas
+      (2000 px) en "fotos-web", junto a este archivo, nombradas
+      001.jpg, 002.jpg ... 108.jpg,
+      en el MISMO orden de los capítulos de abajo
+      (las 15 de invitados van del 087 al 101).
+   2. Si un capítulo tiene más o menos fotos, solo cambia el
+      número en "fotos:". La suma debe dar 108.
+   3. (Opcional) pon una canción en "musica/cancion.mp3".
+   ========================================================= */
+
+const BODA = {
+  novia: "Katherine",
+  novio: "Daniel",
+  fecha: "Sábado 7 de noviembre de 2026",
+  lugar: "Playa El Metalío · Sonsonate, El Salvador",
+  portada: "049.jpg",        // la foto que abre el álbum
+  carpetaFotos: "fotos-web", // fotos optimizadas que se muestran en el álbum
+  carpetaDescarga: "fotos",  // fotos originales para el botón "Descargar" (vacío = usa las mismas del álbum)
+  intro: "Frente al mar, con el sol despidiéndose sobre el Pacífico, Katherine y Daniel se prometieron el resto de su vida. Esta es la historia de ese día, contada momento a momento, desde los primeros nervios hasta la última canción.",
+  cierreTitulo: "Y así empezó su para siempre",
+  cierreTexto: "Katherine y Daniel: gracias por dejarme ser parte de su historia y por confiarme sus recuerdos. Que cada vez que vuelvan a estas fotos, vuelvan también a ese día.",
+  fotografo: "Fabio Reyes",
+  instagram: "fabioreyes_11",
+  musica: ""                 // ej: "musica/cancion.mp3" — déjalo vacío si no quieres música
+};
+
+// "fotos" = cuántas fotos tiene cada capítulo, en orden
+const CAPITULOS = [
+  { titulo: "Katherine se prepara", hora: "4:00 p.m.",
+    texto: "Brochas, peinado y un espejo que poco a poco le devolvía a la novia. Entre risas y nervios, cada detalle se fue acomodando para el momento más esperado.",
+    fotos: 7 },
+  { titulo: "Daniel se prepara", hora: "4:00 p.m.",
+    texto: "Mientras tanto, del otro lado, Daniel se alistaba rodeado de los suyos. El traje, los últimos ajustes y una mirada al reloj que parecía no avanzar.",
+    fotos: 29 },
+  { titulo: "El camino al altar", hora: "5:00 p.m.",
+    texto: "Primero el pajecito, luego Daniel esperando frente al mar. Y entonces llegó Katherine, y por un instante todo lo demás desapareció.",
+    fotos: 9 },
+  { titulo: "La ceremonia", hora: "5:12 p.m.",
+    texto: "Con la arena bajo los pies y el sonido de las olas de fondo, llegaron las promesas, los anillos y el sí que lo cambió todo.",
+    fotos: 17 },
+  { titulo: "Esposos", hora: "5:35 p.m.",
+    texto: "Recién casados y con la última luz del día sobre la playa, se tomaron un momento solo para ellos: caminar, mirarse y empezar a creérselo.",
+    fotos: 9 },
+  { titulo: "La recepción", hora: "6:00 p.m.",
+    texto: "La entrada de los nuevos esposos entre aplausos, el brindis por la vida que comienzan y la partida del pastel. Una noche para celebrar con quienes más los quieren.",
+    fotos: 15 },
+  { titulo: "Quienes los acompañaron", hora: "", tipo: "invitados",
+    texto: "Familia y amigos que viajaron hasta el mar para ser testigos de este día. Su historia también se escribe con ellos.",
+    fotos: 15 },
+  { titulo: "Hasta la última canción", hora: "9:30 p.m.",
+    texto: "Las últimas canciones, los agradecimientos y el cierre de una noche que ya forma parte de su historia.",
+    fotos: 7 }
+];
+
+// Proporción (ancho ÷ alto) de cada foto, de la 001 a la 108, para acomodar las filas.
+// La genera herramientas/optimizar.js. Si la borras, el álbum mide las fotos al cargarlas.
+const PROPORCIONES = [0.668,0.668,0.668,0.668,0.667,0.668,0.668,0.751,1.332,0.751,1.332,0.751,0.751,0.751,0.751,0.751,0.75,0.751,1.332,1.332,0.751,0.751,1.332,1.332,1.332,0.751,0.751,0.751,0.751,0.751,0.751,0.751,0.751,0.751,1.332,0.751,0.751,1.332,0.751,0.751,0.751,0.668,0.668,0.751,1.496,0.751,1.332,0.751,0.751,1.497,0.75,0.75,0.751,0.75,0.75,0.751,1.496,0.751,0.751,0.751,1.332,0.751,0.751,0.751,0.751,0.751,0.751,0.751,0.751,0.751,0.75,1.333,1.496,1.496,1.496,0.668,1.333,0.668,1.332,1.332,1.332,1.332,1.496,1.496,1.496,1.497,1.332,0.751,0.751,0.751,0.751,1.332,0.751,0.751,1.496,1.496,1.496,1.496,1.496,1.496,1.496,1.496,1.496,1.496,1.497,1.496,1.496,1.332];
+
+/* =========================================================
+   A partir de aquí no hace falta tocar nada
+   ========================================================= */
+
+const NUM = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
+// numeración romana que salta el apartado de invitados
+const numCap = i => CAPITULOS.slice(0, i).filter(c => c.tipo !== "invitados").length;
+const todas = []; // lista plana para el visor
+
+// Imagen de reemplazo mientras no estén las fotos reales
+function reemplazo(texto, alto = 1000) {
+  const tonos = ["#d9cbbb","#cdbfae","#e3d6c6","#c9b8a4","#ddd0bf"];
+  const c = tonos[texto.length % tonos.length];
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='${alto}'><rect width='100%' height='100%' fill='${c}'/><text x='50%' y='50%' font-family='Georgia' font-style='italic' font-size='42' fill='#8a7a68' text-anchor='middle'>${texto}</text></svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+function conReemplazo(img, etiqueta, alto) {
+  img.onerror = () => { img.onerror = null; img.src = reemplazo(etiqueta, alto); };
+}
+
+function construir() {
+  document.title = `${BODA.novia} & ${BODA.novio}`;
+  const album = document.getElementById("album");
+  let html = `
+  <header class="portada">
+    <img id="imgPortada" src="${BODA.portada.includes("/") ? BODA.portada : BODA.carpetaFotos + "/" + BODA.portada}" alt="">
+    <div class="portada-texto">
+      <div class="pre">Nuestra boda</div>
+      <h1>${BODA.novia}<em>&amp;</em>${BODA.novio}</h1>
+      <div class="fecha">${BODA.fecha}</div>
+    </div>
+    <div class="bajar"></div>
+  </header>
+  <section class="intro revelar">
+    <div class="ornamento">❦</div>
+    <p>${BODA.intro}</p>
+    <div class="lugar">${BODA.lugar}</div>
+  </section>
+  <nav class="indice revelar">
+    ${CAPITULOS.map((c, i) => `<a href="#cap${i}">${c.tipo === "invitados" ? "✦" : NUM[numCap(i)] + "."} ${c.titulo}</a>`).join("")}
+  </nav>`;
+
+  let n = 1; // número de archivo: 001.jpg, 002.jpg...
+  CAPITULOS.forEach((cap, ci) => {
+    const esInvitados = cap.tipo === "invitados";
+    const etiqueta = esInvitados ? "Un capítulo aparte" : `Capítulo ${NUM[numCap(ci)]}`;
+    html += `
+    <div class="${esInvitados ? "fondo-invitados" : ""}">
+    <section class="capitulo" id="cap${ci}">
+      ${esInvitados ? "" : '<div class="linea-tiempo"></div>'}
+      <div class="cap-cabecera revelar">
+        <span class="cap-num">${etiqueta}</span>
+        <h2>${cap.titulo}</h2>
+        ${cap.hora ? `<span class="cap-hora">${cap.hora}</span>` : ""}
+        <p class="cap-texto">${cap.texto}</p>
+      </div>
+      <div class="galeria${esInvitados ? " cuadricula" : ""}">`;
+    for (let fi = 0; fi < cap.fotos; fi++) {
+      const archivo = `${String(n).padStart(3, "0")}.jpg`;
+      const src = `${BODA.carpetaFotos}/${archivo}`;
+      const original = `${BODA.carpetaDescarga || BODA.carpetaFotos}/${archivo}`;
+      const idx = todas.length;
+      todas.push({ src, original, archivo, cap: cap.titulo });
+      const destacada = fi === 0 && !esInvitados ? " destacada" : "";
+      const r = (typeof PROPORCIONES !== "undefined" && PROPORCIONES[n - 1]) || "";
+      html += `<figure class="foto revelar${destacada}" data-i="${idx}"${r ? ` style="--r:${r}"` : ""}>
+                 <img loading="lazy" src="${src}" alt="${cap.titulo}, foto ${fi + 1}" data-n="${n}">
+               </figure>`;
+      n++;
+    }
+    html += `</div></section></div>`;
+  });
+
+  html += `
+  <section class="cierre revelar">
+    <div class="ornamento" style="color:var(--oro);font-family:var(--serif);font-size:1.6rem;margin-bottom:20px">❦</div>
+    <h2>${BODA.cierreTitulo}</h2>
+    <p>${BODA.cierreTexto}</p>
+    <button class="boton" id="verTodo">Revivir el día completo</button>
+    <div class="firma">Fotografía · ${BODA.fotografo}${BODA.instagram ? ` · <a href="https://instagram.com/${BODA.instagram}" target="_blank" rel="noopener">@${BODA.instagram}</a>` : ""}</div>
+  </section>`;
+
+  album.innerHTML = html;
+
+  // Reemplazos si aún no hay fotos
+  conReemplazo(document.getElementById("imgPortada"), "Foto de portada", 1200);
+  document.querySelectorAll(".foto img").forEach((img, k) => {
+    const alto = [1000, 1200, 800, 1100, 900][k % 5];
+    conReemplazo(img, "Foto " + img.dataset.n, alto);
+    // Sin PROPORCIONES: mide la foto al cargar y ajusta su fila
+    const fig = img.parentElement;
+    if (!fig.style.getPropertyValue("--r")) {
+      const medir = () => { if (img.naturalWidth && !img.src.startsWith("data:")) fig.style.setProperty("--r", (img.naturalWidth / img.naturalHeight).toFixed(3)); };
+      img.complete ? medir() : img.addEventListener("load", medir, { once: true });
+    }
+  });
+
+  document.querySelectorAll(".foto").forEach(f =>
+    f.addEventListener("click", () => abrir(+f.dataset.i)));
+  document.getElementById("verTodo").addEventListener("click", () => { abrir(0); iniciarAuto(); });
+}
+
+/* ---------- Scroll: aparición y progreso ---------- */
+function animaciones() {
+  const obs = new IntersectionObserver(entradas => {
+    entradas.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
+  }, { threshold: .12, rootMargin: "0px 0px -40px 0px" });
+  document.querySelectorAll(".revelar").forEach(el => obs.observe(el));
+
+  const barra = document.getElementById("progreso");
+  addEventListener("scroll", () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    barra.style.width = (max > 0 ? scrollY / max * 100 : 0) + "%";
+  }, { passive: true });
+}
+
+/* ---------- Visor ---------- */
+const visor = document.getElementById("visor");
+const vImg = document.getElementById("vImg");
+let actual = 0, auto = null, inicioX = null;
+
+function mostrar(i) {
+  actual = (i + todas.length) % todas.length;
+  const f = todas[actual];
+  vImg.style.opacity = 0;
+  setTimeout(() => {
+    vImg.onerror = () => { vImg.onerror = null; vImg.src = reemplazo("Foto " + (actual + 1), 1000); };
+    vImg.src = f.src;
+    vImg.alt = f.cap;
+    vImg.style.opacity = 1;
+  }, 180);
+  document.getElementById("vCap").textContent = f.cap;
+  document.getElementById("vCont").textContent = `${actual + 1} / ${todas.length}`;
+  const descargar = document.getElementById("vDescargar");
+  descargar.href = f.original;
+  descargar.download = `${BODA.novia}-${BODA.novio}-${f.archivo}`;
+  // precarga la siguiente
+  new Image().src = todas[(actual + 1) % todas.length].src;
+}
+function abrir(i) { visor.classList.add("abierto"); document.body.style.overflow = "hidden"; mostrar(i); }
+function cerrar() { visor.classList.remove("abierto"); document.body.style.overflow = ""; detenerAuto(); }
+
+function iniciarAuto() {
+  detenerAuto();
+  document.getElementById("vAuto").textContent = "❚❚ Pausa";
+  const barra = document.getElementById("vBarra");
+  const dur = 4000; let t0 = performance.now();
+  auto = setInterval(() => {
+    const p = (performance.now() - t0) / dur;
+    barra.style.width = Math.min(p, 1) * 100 + "%";
+    if (p >= 1) {
+      if (actual === todas.length - 1) { detenerAuto(); return; }
+      mostrar(actual + 1); t0 = performance.now();
+    }
+  }, 50);
+}
+function detenerAuto() {
+  clearInterval(auto); auto = null;
+  document.getElementById("vAuto").textContent = "▶ Presentación";
+  document.getElementById("vBarra").style.width = 0;
+}
+
+document.getElementById("vCerrar").onclick = cerrar;
+document.getElementById("vPrev").onclick = () => { detenerAuto(); mostrar(actual - 1); };
+document.getElementById("vNext").onclick = () => { detenerAuto(); mostrar(actual + 1); };
+document.getElementById("vAuto").onclick = () => auto ? detenerAuto() : iniciarAuto();
+visor.addEventListener("click", e => { if (e.target === visor) cerrar(); });
+addEventListener("keydown", e => {
+  if (!visor.classList.contains("abierto")) return;
+  if (e.key === "Escape") cerrar();
+  if (e.key === "ArrowRight") { detenerAuto(); mostrar(actual + 1); }
+  if (e.key === "ArrowLeft") { detenerAuto(); mostrar(actual - 1); }
+});
+visor.addEventListener("touchstart", e => { inicioX = e.touches[0].clientX; }, { passive: true });
+visor.addEventListener("touchend", e => {
+  if (inicioX === null) return;
+  const dx = e.changedTouches[0].clientX - inicioX;
+  if (Math.abs(dx) > 50) { detenerAuto(); mostrar(actual + (dx < 0 ? 1 : -1)); }
+  inicioX = null;
+});
+
+/* ---------- Música opcional ---------- */
+function musica() {
+  if (!BODA.musica) return;
+  const audio = document.getElementById("audio");
+  const btn = document.getElementById("btnMusica");
+  audio.src = BODA.musica;
+  btn.classList.add("activo");
+  btn.style.opacity = .5;
+  btn.onclick = () => {
+    if (audio.paused) { audio.play().catch(() => {}); btn.style.opacity = 1; }
+    else { audio.pause(); btn.style.opacity = .5; }
+  };
+}
+
+construir();
+animaciones();
+musica();
+</script>
+</body>
+</html>
